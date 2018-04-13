@@ -1,8 +1,8 @@
 from pymongo import MongoClient
 
 def Connect():
-	#client = MongoClient('mongodb+srv://C00195570:j264du@3rdyearproject-sams9.mongodb.net/admin')
-	client = MongoClient()	
+	client = MongoClient('mongodb+srv://C00195570:j264du@3rdyearproject-sams9.mongodb.net/admin')
+	#client = MongoClient()	#loclhost
 	db = client.TestDB
 	return db
 
