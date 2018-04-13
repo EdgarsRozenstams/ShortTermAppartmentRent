@@ -1,0 +1,78 @@
+body{
+    background-color:darkslategray;
+}
+div.Toolbar {
+    width: 100%;
+    height: 4vw;
+}
+
+button{
+    width: 33%;
+    word-wrap: break-word;
+    display: inline-block;
+    font-size: 2.5vw;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #538888;
+    border: none;
+    margin-top: 5px;
+}
+
+button:hover {background-color: #368e7d
+}
+
+button:active {
+  background-color: #368e7d;
+  transform: translateY(4px);
+}
+
+.content{
+    width: 100%;
+    background-color: #538888;
+}
+
+
+.LoginForm{
+    display: block;
+    width: 60%;
+    padding-top: 2%;
+    margin: 5% auto 15% auto;
+    background-color: #b5ffe3;  
+}
+
+
+/*credit: https://www.w3schools.com/howto/howto_css_signup_form.asp*/
+* {box-sizing: border-box}
+/* Full-width input fields */
+  input[type=text], input[type=password], input[type=email] {
+  width: 100%;
+  padding: 15px;
+  margin: 0px 0 15px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f2f1;
+}
+
+/* Add a background color when the inputs get focus */
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+hr {
+  border: 1px solid #368e7d;
+  margin-bottom: 20px;
+}
+
+.footerLinks{
+    text-align:center;
+    padding-bottom: 10px;
+}
+
+
+a:link {text-decoration: none;}
+a:visited {text-decoration: none;}
+a:hover {text-decoration: underline;}
+a:active {text-decoration: underline;}

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{title}}</title>
+        <link rel="stylesheet" href="./static/Main.css">
+    </head>
+    <body>
+        <div class="Toolbar">
+        <a href="/"><button>Home</button></a>
+        <button >Rent</button>
+        <a href="/AccountLogin"><button>Account</button></a>
+    </div>
+    <hr> 
+        {% block body%}
+        {% endblock %}      
+    </body>
+</html>
