@@ -1,27 +1,7 @@
+{% extends "toolbar.html" %}
 
-    {% extends "toolbar.html" %}
-
-    {% block body %}
-        <div class="FormDiv">
-            <form class = "LoginForm" action="/ProcessLogin" method="post">
-                <div style="margin: 10px;">
-                    <h1 align="center">Log in</h1>
-                    <label>Email:</label><br>
-                    <input type="email" name="Email" required><br><br>
-                    
-                    <label>Password:</label><br>
-                    <input type="password" name="Password" required><br>
-                    
-                    <a href="/"><button type="submit" style="width: 100%;" name="submit" value="action" class="button">Login</button></a>
-                    <hr>
-                    <p class="footerLinks">
-                        <a href="/Register" style ="margin-right:10px;">Create Account</a>
-                        <a href="" >Forgot Password</a>
-                    </p>
-                </div>
-            </form>
-        </div>
-    {% endblock %}
+{% block body %}
 
 
+{% endblock %}
 
