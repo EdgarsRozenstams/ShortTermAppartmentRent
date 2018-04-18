@@ -6,7 +6,7 @@ div.Toolbar {
     height: 4vw;
 }
 
-button{
+button.button{
     width: 33%;
     word-wrap: break-word;
     display: inline-block;
@@ -18,6 +18,19 @@ button{
     background-color: #538888;
     border: none;
     margin-top: 5px;
+}
+
+flash
+
+button.close{
+     background-color: Transparent;
+     background-repeat:no-repeat;
+     border: none;
+     cursor:pointer;
+     overflow: hidden;
+     outline:none;
+     width: auto;
+    margin-right: 0px;
 }
 
 button:hover {background-color: #368e7d

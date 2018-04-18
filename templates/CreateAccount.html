@@ -31,21 +31,11 @@
         <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
       </label>
 
-      <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
-	
-      {% with messages = get_flashed_messages() %}
-         {% if messages %}
-            <ul>
-               {% for message in messages %}
-               <li<{{ message }}</li>
-               {% endfor %}
-            </ul>
-         {% endif %}
-      {% endwith %}      
+      <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>  
 
 
       <div class="formBtns">
-        <button style="width: 100%;" name="submit" value="action">Submit</button>
+        <button style="width: 100%;" name="submit" value="action" class="button">Submit</button>
       </div>
     </div>
   </form>

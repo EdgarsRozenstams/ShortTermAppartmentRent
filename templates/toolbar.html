@@ -8,11 +8,21 @@
     </head>
     <body>
         <div class="Toolbar">
-        <a href="/"><button>Home</button></a>
-        <button >Rent</button>
-        <a href="/AccountLogin"><button>Account</button></a>
+        <a href="/"><button class="button">Home</button></a>
+        <button class="button">Rent</button>
+        <a href="/account"><button class="button">Account</button></a>
     </div>
     <hr> 
+        {% with messages = get_flashed_messages() %}
+	       {% if messages %}
+	           {% for message in messages %}
+		          <div class="alert alert-warning alert-dismissible" role="alert">
+			         <ul class=flashes>
+                        <li>{{ message }}</li>
+                {% endfor %}
+	       {% endif %}
+	{% endwith %}
+        
         {% block body%}
         {% endblock %}      
     </body>
