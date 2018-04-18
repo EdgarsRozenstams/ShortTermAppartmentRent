@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, session, flash, redirect, url
 from dbconnect import Connect, registerUser
 from wtforms import Form
 from passlib.hash import sha256_crypt #password hashing
+from functools import wraps
 
 from logging.config import dictConfig
 
@@ -21,7 +22,33 @@ def Home():
 
 @app.route('/account')
 def Account():
-    return render_template('account.html', title = 'Account Login')
+    return render_template('login.html', title = 'Account Login')
+
+@app.route('/login')
+def Login():
+    return render_template('login.html', title = 'Account Login')
+    
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):  # argument and key word args
+        if 'logged_in' in session:
+            return f(*args,**kwargs)
+        else:
+            flash("You Need To Be Logged In")
+            return redirect(url_for('Login'))
+    return wrap
+
+
+       
+@app.route("/logout")
+@login_required
+def logout():
+    session.clear()
+    flash("You Have Been logged out")
+    return redirect(url_for("Home"))
+    
+    
     
     
 @app.route('/ProcessLogin',methods=["GET","POST"])
