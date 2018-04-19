@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, session, flash, redirect, url
 from dbconnect import Connect, registerUser
 from wtforms import Form
 from passlib.hash import sha256_crypt #password hashing
+from bson.json_util import loads
 from functools import wraps
 
 from logging.config import dictConfig
@@ -22,43 +23,30 @@ def Home():
 
 @app.route('/account')
 def Account():
-    return render_template('login.html', title = 'Account Login')
+    #flash(session['data'])
+    fname = session['data']['name']
+    lname = session['data']['surname']
+    email = session['data']['email']
+    phone = session['data']['phone']
+    
+    return render_template('account.html', title = 'Account Login', fname = fname , lname = lname, email = email, phone = phone)
+    
 
 @app.route('/login')
 def Login():
     return render_template('login.html', title = 'Account Login')
     
 
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):  # argument and key word args
-        if 'logged_in' in session:
-            return f(*args,**kwargs)
-        else:
-            flash("You Need To Be Logged In")
-            return redirect(url_for('Login'))
-    return wrap
-
-
-       
-@app.route("/logout")
-@login_required
-def logout():
-    session.clear()
-    flash("You Have Been logged out")
-    return redirect(url_for("Home"))
-    
-    
-    
-    
+ 
 @app.route('/ProcessLogin',methods=["GET","POST"])
 def AccountLogin():
     db = Connect()
     
     if request.form["submit"]:
         
-        data = db.TestColl.find_one({"email": request.form['Email']})
-        psw = data['password']  #gets the third item in the JSON data which is the password 
+        data = db.TestColl.find_one({"email": request.form['Email']},{'_id': 0}) #strips the _id as the obj type has problems
+        session['data'] = data
+        psw = data['password']  #gets the password from the json document 
         
         if sha256_crypt.verify(request.form['Password'],psw): ##if the hashed input password is equal to the hashed saved password
             session['logged_in'] = True
@@ -71,11 +59,27 @@ def AccountLogin():
              flash("Invalid Credentials, try again")
              error = "Invalid Credentials, try again"
          
-        
-        
     return render_template('account.html', title = 'Account Login',error =  error)
 
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):  # argument and key word args
+        if 'logged_in' in session:
+            return f(*args,**kwargs)
+        else:
+            flash("You Need To Be Logged In")
+            return redirect(url_for('Login'))
+    return wrap
 
+
+@app.route("/logout")
+@login_required
+def logout():
+    session.clear()
+    flash("You Have Been logged out")
+    return redirect(url_for("Home"))
+
+    
 @app.route('/Register')
 def CreateAccount():
     return render_template('CreateAccount.html', title = 'Register')
