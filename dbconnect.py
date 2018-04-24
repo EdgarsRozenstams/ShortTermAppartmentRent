@@ -6,6 +6,13 @@ def Connect():
 	db = client.TestDB
 	return db
 
+def getProps(user):
+	db = Connect()
+	collection = db.TestProperties
+	properties = list(collection.find({"User": user},{'_id': 0}))
+	#properties = collection.find({"User": user},{'_id': 0})
+	return properties
+
 	
 def registerUser(post):
 	db = Connect()
