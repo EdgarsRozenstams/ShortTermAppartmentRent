@@ -132,7 +132,7 @@ def propHandling():
     
     registerProperty(post)
     flash("Property has been registered")
-        return render_template('account.html')
+    return redirect(url_for("Account"))
     
 
 
