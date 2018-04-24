@@ -73,15 +73,20 @@ div.profile_btns{
 }
 
 div.properties{
+    width: 100%;
     display:inline-block;
     margin: 0px,30%,0px,30%;
-    background-color: aqua;
 }
 
-table{
+table.userInfo{
     width: 60%;
     text-align: center;
     border-collapse: collapse;  
+}
+table.propTable{
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse; 
 }
 table, th, td {
     border: 1px solid black;

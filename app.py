@@ -1,25 +1,33 @@
 #Name   :Edgars Rozenstams
 
 from flask import Flask, render_template, request, session, flash, redirect, url_for
-from dbconnect import Connect, registerUser, registerProperty
-from wtforms import Form
+from flask_table import Table, Col
 from passlib.hash import sha256_crypt #password hashing
 from bson.json_util import loads
 from functools import wraps
 
 from logging.config import dictConfig
 
-
-# might have to use WTForms
+from dbconnect import Connect, registerUser, registerProperty, getProps
 
 
 app = Flask(__name__)
 app.secret_key = 'dadass34dawddasfrjegb/1kjbvr/o'
 
+class propTable(Table):
+	#User = Col('User', show=False)
+	Addres = Col('Addres')
+	cost = Col('Cost')
+	description = Col('Description')
+	amenities = Col('Amenities')
+	Bedrooms = Col('Bedrooms')
+	bathrooms = Col('Bathrooms')
+	
+
 
 @app.route('/')
 def Home():
-    return render_template('toolbar.html', title = 'Rent Search')
+    return render_template('home.html', title = 'Home')
 
 @app.route('/account')
 def Account():
@@ -29,8 +37,14 @@ def Account():
     email = session['data']['email']
     phone = session['data']['phone']
     
-    return render_template('account.html', title = 'Account', fname = fname , lname = lname, email = email, phone = phone)
+	#TODO: change session[data] to session[user]
+	
+    properties = getProps(session['data']['email'])
+    table = propTable(properties)
+
+    return render_template('account.html', title = 'Account', fname = fname , lname = lname, email = email, phone = phone, table=table)
     
+	
 
 @app.route('/login')
 def Login():
@@ -52,7 +66,7 @@ def AccountLogin():
             
             flash("You are now Logged in ")
             return redirect(url_for("Account"))
-        
+
         else:
              flash("Invalid Credentials, try again")
              error = "Invalid Credentials, try again"
@@ -69,19 +83,16 @@ def login_required(f):
             return redirect(url_for('Login'))
     return wrap
 
-
 @app.route("/logout")
 @login_required
 def logout():
     session.clear()
     flash("You Have Been logged out")
     return redirect(url_for("Home"))
-
-    
+  
 @app.route('/Register')
 def CreateAccount():
     return render_template('CreateAccount.html', title = 'Register')
-
 
 @app.route('/ProcessRegistration', methods=["GET","POST"])
 def ProcessRegistration():
@@ -134,8 +145,6 @@ def propHandling():
     flash("Property has been registered")
     return redirect(url_for("Account"))
     
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
