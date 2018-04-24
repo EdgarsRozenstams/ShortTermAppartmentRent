@@ -1,7 +1,7 @@
 #Name   :Edgars Rozenstams
 
 from flask import Flask, render_template, request, session, flash, redirect, url_for
-from dbconnect import Connect, registerUser
+from dbconnect import Connect, registerUser, registerProperty
 from wtforms import Form
 from passlib.hash import sha256_crypt #password hashing
 from bson.json_util import loads
@@ -29,21 +29,19 @@ def Account():
     email = session['data']['email']
     phone = session['data']['phone']
     
-    return render_template('account.html', title = 'Account Login', fname = fname , lname = lname, email = email, phone = phone)
+    return render_template('account.html', title = 'Account', fname = fname , lname = lname, email = email, phone = phone)
     
 
 @app.route('/login')
 def Login():
-    return render_template('login.html', title = 'Account Login')
-    
+    return render_template('login.html', title = 'Account Login')   
 
- 
+
 @app.route('/ProcessLogin',methods=["GET","POST"])
 def AccountLogin():
     db = Connect()
     
     if request.form["submit"]:
-        
         data = db.TestColl.find_one({"email": request.form['Email']},{'_id': 0}) #strips the _id as the obj type has problems
         session['data'] = data
         psw = data['password']  #gets the password from the json document 
@@ -95,7 +93,7 @@ def ProcessRegistration():
         phone = request.form['Phone']   #check if its a number crete seppereate function for validation
         psw = request.form['Password']
         confirmPsw = request.form['psw-repeat']
-       
+        
 
     if psw == confirmPsw:
         db = Connect()
@@ -109,11 +107,35 @@ def ProcessRegistration():
 
         else:
             post={"name": fname, "surname": sname, "email": email, "phone": phone, "password": sha256_crypt.encrypt(str(request.form['Password']))}
-            print(post)
             registerUser(post)
             flash("Thanks for registering!")
 
     return render_template('CreateAccount.html', title = 'Register')
+
+@app.route('/registerProp')
+@login_required
+def registerProp():
+    return render_template('registerProp.html', title = 'Register Property')
+
+@app.route('/propRegistrationHandling', methods=["GET","POST"])
+def propHandling():
+    if request.form["submit"]:
+        
+        address = request.form['address']
+        cost = request.form['cost']
+        desc = request.form['desc']
+        amenities = request.form['amenities']
+        bed = request.form['bed']
+        bath = request.form['bath']
+    
+    post={"User": session['data']['email'],"Addres": address,"cost":cost,"description":desc,                               "amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
+    
+    registerProperty(post)
+    flash("Property has been registered")
+        return render_template('account.html')
+    
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

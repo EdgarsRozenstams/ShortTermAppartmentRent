@@ -1,0 +1,37 @@
+{% extends "toolbar.html" %}
+
+{% block body %}
+<link rel="stylesheet" href="./static/CreateAccount.css">
+<div>
+  <form class="registrationForm" action="/propRegistrationHandling" method='post'>
+    <div style="margin: 10px;">
+      <h1 align="center">Sign Up</h1>
+      <p>Please fill all the fields to register your property.</p>
+      <hr>
+        
+      <label name="address"><b>Address</b></label>
+      <input type="text" placeholder="Address" name="address" required>
+      
+      <label name="cost"><b>Cost per month</b></label>
+      <input type="number" placeholder="Cost per month" name="cost" required><br><br>       
+        
+      <label name="desc"><b>Description</b></label>
+      <input type="text" placeholder="Description" name="desc" required>
+        
+      <label name="amenities"><b>Amenities</b></label>
+      <input type='text' placeholder="List amenities" name="amenities" required><br><br>
+    
+      <label name="bed"><b>Bedroom count</b></label>
+      <input type="text" placeholder="Bedroom count" name="bed" required>
+
+      <label name="bath"><b>Bathroom count</b></label>
+      <input type="text" placeholder="Bathroom count" name="bath" required>
+
+      <div class="formBtns">
+        <button style="width: 100%;" name="submit" value="action" class="button">Submit</button>
+      </div>
+    </div>
+  </form>
+      
+</div> 
+{% endblock %}
