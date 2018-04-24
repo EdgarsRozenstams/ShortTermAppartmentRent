@@ -1,7 +1,30 @@
 {% extends "toolbar.html" %}
 
 {% block body %}
-
+<link rel="stylesheet" href="./static/Home.css">
+<div class="Home">
+    <h1 class="Header">All Properties</h1>
+    <hr>
+    <div class="properties">
+        {% for p in properties %}
+            
+            <div class="propertyList">    
+                <div  class="propAddress">
+                    <h1><a>{{p.Addres}}</a></h1>
+                </div>
+                
+                <div class="propDetails">
+                    Cost: {{p.cost}} /Month<br>
+                    {{p.description}}<br>
+                    {{p.amenities}}<br>
+                    {{p.Bedrooms}} Bedrooms<br>
+                    {{p.bathrooms}} Bathrooms<br>
+                </div>
+            </div> 
+        {% endfor %}
+        
+    </div>
+</div>
 
 
 {% endblock%}

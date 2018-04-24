@@ -1,33 +1,36 @@
 #Name   :Edgars Rozenstams
 
 from flask import Flask, render_template, request, session, flash, redirect, url_for
-from flask_table import Table, Col
+from flask_table import Table, Col, LinkCol
 from passlib.hash import sha256_crypt #password hashing
 from bson.json_util import loads
 from functools import wraps
 
 from logging.config import dictConfig
 
-from dbconnect import Connect, registerUser, registerProperty, getProps
-
+from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps
 
 app = Flask(__name__)
 app.secret_key = 'dadass34dawddasfrjegb/1kjbvr/o'
 
 class propTable(Table):
-	#User = Col('User', show=False)
+	#TODO: put method in sepperate file maybe
+	
+	classes = ['proptable'] #table css class
+	
+	User = Col('User', show=False)
 	Addres = Col('Addres')
 	cost = Col('Cost')
 	description = Col('Description')
 	amenities = Col('Amenities')
 	Bedrooms = Col('Bedrooms')
 	bathrooms = Col('Bathrooms')
-	
-
 
 @app.route('/')
 def Home():
-    return render_template('home.html', title = 'Home')
+    properties = getAllProps()
+    #table = propTable(properties)
+    return render_template('home.html', title = 'Home',properties = properties)
 
 @app.route('/account')
 def Account():
@@ -37,15 +40,13 @@ def Account():
     email = session['data']['email']
     phone = session['data']['phone']
     
-	#TODO: change session[data] to session[user]
+	#TODO: change session[data] to session[userdata]
 	
-    properties = getProps(session['data']['email'])
+    properties = getUserProps(session['data']['email'])
     table = propTable(properties)
 
     return render_template('account.html', title = 'Account', fname = fname , lname = lname, email = email, phone = phone, table=table)
     
-	
-
 @app.route('/login')
 def Login():
     return render_template('login.html', title = 'Account Login')   
@@ -92,8 +93,8 @@ def logout():
   
 @app.route('/Register')
 def CreateAccount():
-    return render_template('CreateAccount.html', title = 'Register')
-
+    return render_template('createAccount.html', title = 'Register')
+	
 @app.route('/ProcessRegistration', methods=["GET","POST"])
 def ProcessRegistration():
 
@@ -101,10 +102,9 @@ def ProcessRegistration():
         fname = request.form['FName']
         sname = request.form['SName']
         email = request.form['Email']
-        phone = request.form['Phone']   #check if its a number crete seppereate function for validation
+        phone = request.form['Phone'] 
         psw = request.form['Password']
         confirmPsw = request.form['psw-repeat']
-        
 
     if psw == confirmPsw:
         db = Connect()
@@ -121,8 +121,22 @@ def ProcessRegistration():
             registerUser(post)
             flash("Thanks for registering!")
 
-    return render_template('CreateAccount.html', title = 'Register')
+    return render_template('createAccount.html', title = 'Register')
 
+@app.route('/EditProfile')
+def EditProfile():
+
+    fname = session['data']['name']
+    sname = session['data']['surname']
+    email = session['data']['email']
+    phone = session['data']['phone']	
+	
+
+    return render_template('editAccount.html', title = 'Edit Profile', fname = fname, sname = sname, email = email, phone = phone )
+	
+
+	
+	
 @app.route('/registerProp')
 @login_required
 def registerProp():
@@ -139,7 +153,8 @@ def propHandling():
         bed = request.form['bed']
         bath = request.form['bath']
     
-    post={"User": session['data']['email'],"Addres": address,"cost":cost,"description":desc,                               "amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
+    post={"User": session['data']['email'],"Addres": address,"cost":cost,"description":desc,
+          "amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
     
     registerProperty(post)
     flash("Property has been registered")

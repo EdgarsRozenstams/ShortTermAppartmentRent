@@ -64,7 +64,7 @@ div.user_profile{
 }
 
 div.user_info{
-    width: 60%;
+    width: 50%;
 }
 
 div.profile_btns{
@@ -78,20 +78,21 @@ div.properties{
     margin: 0px,30%,0px,30%;
 }
 
-table.userInfo{
+table.UserInfo{
     width: 60%;
-    text-align: center;
+    text-align: left;
+    text-align-last: inherit;
     border-collapse: collapse;  
 }
-table.propTable{
+table.proptable{
     width: 100%;
     text-align: center;
     border-collapse: collapse; 
 }
 table, th, td {
     border: 1px solid black;
-    border-left: 0px solid;
-    border-right: 0px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
 }
 
 table th {

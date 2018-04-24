@@ -15,7 +15,7 @@ def getUserProps(user):
 def getAllProps():
 	db = Connect()
 	collection = db.TestProperties
-	properties = list(collection.find({'_id': 0}))
+	properties = list(collection.find())
 	return properties
 	
 def registerUser(post):

@@ -1,0 +1,31 @@
+{% extends "toolbar.html" %}
+
+{% block body %}
+<link rel="stylesheet" href="./static/CreateAccount.css">
+<div>
+  <form class="registrationForm" action="/EditAccount" method='post'>
+    <div style="margin: 10px;">
+      <h1 align="center">Edit Profile Information</h1>
+      <hr>
+        
+      <label name="FName"><b>First Name</b></label>
+      <input type="text" value={{fname}} name="FName" required>
+      
+      <label name="SName"><b>Last Name</b></label>
+      <input type="text" value={{sname}} name="SName" required>       
+        
+      <label name="Email"><b>Email</b></label>
+      <input type="email" value={{email}} name="Email" required>
+        
+      <label name="Phone"><b>Phone No.</b></label>
+      <input type='tel' value={{phone}} name="Phone" required><br><br>
+
+
+      <div class="formBtns">
+        <button style="width: 100%;" name="submit" value="action" class="button">Submit</button>
+      </div>
+    </div>
+  </form>
+      
+</div> 
+{% endblock %}
