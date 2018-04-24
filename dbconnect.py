@@ -12,4 +12,8 @@ def registerUser(post):
 	collection = db.TestColl
 	collection.insert_one(post)
 	
+def registerProperty(post):
+	db = Connect()
+	collection = db.TestProperties
+	collection.insert_one(post)
 	
