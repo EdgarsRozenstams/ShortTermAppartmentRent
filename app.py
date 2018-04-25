@@ -5,10 +5,12 @@ from flask_table import Table, Col, LinkCol
 from passlib.hash import sha256_crypt #password hashing
 from bson.json_util import loads
 from functools import wraps
+import simplejson as json
+from json import dumps, loads
 
 from logging.config import dictConfig
 
-from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps
+from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser
 
 app = Flask(__name__)
 app.secret_key = 'dadass34dawddasfrjegb/1kjbvr/o'
@@ -55,9 +57,12 @@ def Login():
 @app.route('/ProcessLogin',methods=["GET","POST"])
 def AccountLogin():
     db = Connect()
+    users = db.TestColl
     
     if request.form["submit"]:
-        data = db.TestColl.find_one({"email": request.form['Email']},{'_id': 0}) #strips the _id as the obj type has problems
+
+        data = users.find_one({"email": request.form['Email']}) #strips the _id as the obj type has problems ,{'_id': 0}
+		
         session['data'] = data
         psw = data['password']  #gets the password from the json document 
         
@@ -124,18 +129,34 @@ def ProcessRegistration():
     return render_template('createAccount.html', title = 'Register')
 
 @app.route('/EditProfile')
-def EditProfile():
-
-    fname = session['data']['name']
-    sname = session['data']['surname']
-    email = session['data']['email']
-    phone = session['data']['phone']	
+def EditProfile(): 
+	fname = session['data']['name']
+	sname = session['data']['surname']
+	email = session['data']['email']
+	phone = session['data']['phone']	
+		
+	return render_template('editAccount.html', title = 'Edit Profile', fname = fname, sname = sname, email = email, phone = phone)
 	
+@app.route('/UpdateProfile', methods=["GET","POST"] )
+def UpdateProfile():
+		if request.form["submit"]:
+		
+			fname = request.form['FName']
+			sname = request.form['SName']
+			email = request.form['Email']
+			phone = request.form['Phone']
 
-    return render_template('editAccount.html', title = 'Edit Profile', fname = fname, sname = sname, email = email, phone = phone )
-	
-
-	
+		post = session['data']
+		
+		#replaces user data
+		post["name"] = fname
+		post["surname"] = sname
+		post["email"] = email
+		post["phone"]= phone
+		
+		flash(post)
+		
+		updateUser(post)
 	
 @app.route('/registerProp')
 @login_required

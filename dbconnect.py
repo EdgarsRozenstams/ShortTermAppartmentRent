@@ -28,3 +28,7 @@ def registerProperty(post):
 	collection = db.TestProperties
 	collection.insert_one(post)
 	
+def updateUser(post):
+	db = Connect()
+	collection = db.TestColl
+	mycollection.update_one({'_id':mongo_id}, {"$set": post}, upsert=False)
