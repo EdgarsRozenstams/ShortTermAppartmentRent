@@ -1,14 +1,10 @@
 #Name   :Edgars Rozenstams
-
 from flask import Flask, render_template, request, session, flash, redirect, url_for
 from flask_table import Table, Col, LinkCol
 from passlib.hash import sha256_crypt #password hashing
-from bson.json_util import loads
 from functools import wraps
-import simplejson as json
-from json import dumps, loads
 
-from logging.config import dictConfig
+#from logging.config import dictConfig
 
 from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser
 
