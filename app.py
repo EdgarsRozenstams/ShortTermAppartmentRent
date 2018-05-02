@@ -12,7 +12,6 @@ app = Flask(__name__)
 app.secret_key = 'dadass34dawddasfrjegb/1kjbvr/o'
 
 class propTable(Table):
-	#TODO: put method in sepperate file maybe
 	
 	classes = ['proptable'] #table css class
 	
@@ -27,7 +26,6 @@ class propTable(Table):
 @app.route('/')
 def Home():
     properties = getAllProps()
-    #table = propTable(properties)
     return render_template('home.html', title = 'Home',properties = properties)
 
 @app.route('/account')
@@ -57,7 +55,7 @@ def AccountLogin():
     
     if request.form["submit"]:
 
-        data = users.find_one({"email": request.form['Email']}) #strips the _id as the obj type has problems ,{'_id': 0}
+        data = users.find_one({"email": request.form['Email']},{'_id': 0}) #strips the _id as the obj type has problems ,{'_id': 0}
 		
         session['data'] = data
         psw = data['password']  #gets the password from the json document 
@@ -125,6 +123,7 @@ def ProcessRegistration():
     return render_template('createAccount.html', title = 'Register')
 
 @app.route('/EditProfile')
+@login_required
 def EditProfile(): 
 	fname = session['data']['name']
 	sname = session['data']['surname']
@@ -134,6 +133,7 @@ def EditProfile():
 	return render_template('editAccount.html', title = 'Edit Profile', fname = fname, sname = sname, email = email, phone = phone)
 	
 @app.route('/UpdateProfile', methods=["GET","POST"] )
+@login_required
 def UpdateProfile():
 		if request.form["submit"]:
 		
