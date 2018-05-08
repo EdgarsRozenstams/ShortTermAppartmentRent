@@ -9,8 +9,17 @@ from functools import wraps
 from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser
 
 app = Flask(__name__)
-app.secret_key = 'dadass34dawddasfrjegb/1kjbvr/o'
+app.secret_key = 'dad555ass34dawddasfrjegb/1kjbvr/o'
 
+Counties = []
+
+def getCounties():
+    with open("counties.txt", "r") as c:
+        for line in c:
+            Counties.append(line.strip())
+
+
+getCounties()
 class propTable(Table):
 	
 	classes = ['proptable'] #table css class
@@ -23,22 +32,32 @@ class propTable(Table):
 	Bedrooms = Col('Bedrooms')
 	bathrooms = Col('Bathrooms')
 
+
+# passes the counties to the rent search in the template
+@app.context_processor
+def inject_counties():
+    return dict(counties = Counties)
+    
+    
 @app.route('/')
 def Home():
     properties = getAllProps()
     return render_template('home.html', title = 'Home',properties = properties)
 
+@app.route('/rent')
+def Rent():
+    
+
 @app.route('/account')
 def Account():
-    #flash(session['data'])
-    fname = session['data']['name']
-    lname = session['data']['surname']
-    email = session['data']['email']
-    phone = session['data']['phone']
+
+    fname = session['userData']['name']
+    lname = session['userData']['surname']
+    email = session['userData']['email']
+    phone = session['userData']['phone']
     
-	#TODO: change session[data] to session[userdata]
 	
-    properties = getUserProps(session['data']['email'])
+    properties = getUserProps(session['userData']['email'])
     table = propTable(properties)
 
     return render_template('account.html', title = 'Account', fname = fname , lname = lname, email = email, phone = phone, table=table)
@@ -57,21 +76,20 @@ def AccountLogin():
 
         data = users.find_one({"email": request.form['Email']},{'_id': 0}) #strips the _id as the obj type has problems ,{'_id': 0}
 		
-        session['data'] = data
+        session['userData'] = data
         psw = data['password']  #gets the password from the json document 
         
         if sha256_crypt.verify(request.form['Password'],psw): ##if the hashed input password is equal to the hashed saved password
             session['logged_in'] = True
             session['username'] = data['name'] #users name
             
+            
             flash("You are now Logged in ")
             return redirect(url_for("Account"))
 
         else:
              flash("Invalid Credentials, try again")
-             error = "Invalid Credentials, try again"
-         
-    return render_template('account.html', title = 'Account Login',error =  error)
+             return render_template('login.html', title = 'Account Login')
 
 def login_required(f):
     @wraps(f)
@@ -111,24 +129,25 @@ def ProcessRegistration():
 
         x = collection.count({"email": email})
 
-        if x > 0:
+        if x > 0: #check if a person has an already existing account
             flash("That username is already taken, please choose another")
-            return render_template('toolbar.html', title = 'Register')
+            return render_template('createAccount.html', title = 'Register')
 
         else:
             post={"name": fname, "surname": sname, "email": email, "phone": phone, "password": sha256_crypt.encrypt(str(request.form['Password']))}
             registerUser(post)
             flash("Thanks for registering!")
+            return render_template('account.html', title = 'Account')
 
-    return render_template('createAccount.html', title = 'Register')
+    
 
 @app.route('/EditProfile')
 @login_required
 def EditProfile(): 
-	fname = session['data']['name']
-	sname = session['data']['surname']
-	email = session['data']['email']
-	phone = session['data']['phone']	
+	fname = session['userData']['name']
+	sname = session['userData']['surname']
+	email = session['userData']['email']
+	phone = session['userData']['phone']	
 		
 	return render_template('editAccount.html', title = 'Edit Profile', fname = fname, sname = sname, email = email, phone = phone)
 	
@@ -142,7 +161,7 @@ def UpdateProfile():
 			email = request.form['Email']
 			phone = request.form['Phone']
 
-		post = session['data']
+		post = session['userData']
 		
 		#replaces user data
 		post["name"] = fname
@@ -170,7 +189,7 @@ def propHandling():
         bed = request.form['bed']
         bath = request.form['bath']
     
-    post={"User": session['data']['email'],"Addres": address,"cost":cost,"description":desc,
+    post={"User": session['userData']['email'],"Addres": address,"cost":cost,"description":desc,
           "amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
     
     registerProperty(post)

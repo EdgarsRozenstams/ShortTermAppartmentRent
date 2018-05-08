@@ -4,35 +4,76 @@
     <head>
         <meta charset="UTF-8">
         <title>{{title}}</title>
-        <link rel="stylesheet" href="./static/Main.css">
+        <link rel="stylesheet" type="text/css" href="./static/Main.css">
     </head>
     <body>
-        <div class="Toolbar">
+        <div class="toolbar">
             
-            {% if session.logged_in %}
-               <a href="/"><button class="button">Home</button></a>
-               <button class="button">Rent</button>
-               <a href="/account"><button class="button">Account</button></a> 
-            {% else %}
-               <a href="/"><button class="button">Home</button></a>
-               <button class="button">Rent</button>
-               <a href="/login"><button class="button">Log in</button></a>
-            {% endif %}
+             {% if session.logged_in %}
+                    <a href="/"><button class="button">Home</button></a>
+                    <button id="rent" class="button rent">Rent </button>
+                    <a href="/account"><button class="button">Account</button></a> 
+             {% else %}
+                   <a href="/"><button class="button">Home</button></a>
+                   <button id="rent" class="button">Rent</button>
+                   <a href="/login"><button class="button">Log in</button></a>
+             {% endif %}
             
-        
+            
+            <div id="simpleModal" class=modal>
+                <div class="modal-content">
+                    <span class="closeBtn">&times;</span>
+                    <form>
+                        <fieldset>
+                            <div class="col">
+                                <label>Area:</label>
+                                <select name="counties" method="GET">
+                                    {% for county in counties %}
+                                        <option value= "{{county}}" SELECTED>{{county}}</option>"
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col">
+                                <label>Price Range:</label>
+                                <input placeholder="Min" type="number" name="minPrice">
+                                <input placeholder="Max" type="number" name="maxPrice"> 
+                            </div>
+                            
+                            <div class="col">
+                                <label>Bedrooms:</label>
+                                <input placeholder="Min" type="number" name="minBed">
+                                <input placeholder="Max" type="number" name="maxBed">
+                            </div>
+                            
+                            <a href=""><button name="search" value="action" class="search">SEARCH</button></a>
+
+                            
+                        </fieldset>
+                    </form>                    
+                </div>    
+            </div>
+            
+            
+            
+            <script src="./static/index.js"></script>
         </div>
-    <hr> 
+   
+        <hr> 
+        
         {% with messages = get_flashed_messages() %}
 	       {% if messages %}
 	           {% for message in messages %}
 		          <div role="alert">
 			         <ul class=flashes>
                         <li>{{ message }}</li>
+                     </ul>
+                  </div>
                 {% endfor %}
 	       {% endif %}
-	{% endwith %}
+	   {% endwith %}
         
-        {% block body%}
-        {% endblock %}      
+       {% block body%}
+       {% endblock %}
     </body>
 </html>

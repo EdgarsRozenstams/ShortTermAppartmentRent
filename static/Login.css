@@ -1,0 +1,42 @@
+button.close{
+     background-color: Transparent;
+     background-repeat:no-repeat;
+     border: none;
+     cursor:pointer;
+     overflow: hidden;
+     outline:none;
+     width: auto;
+    margin-right: 0px;
+}
+
+.LoginForm{
+    display: block;
+    width: 60%;
+    padding-top: 2%;
+    margin: 5% auto 15% auto;
+    background-color: #b5ffe3;  
+}
+
+/*credit: https://www.w3schools.com/howto/howto_css_signup_form.asp*/
+* {box-sizing: border-box}
+/* Full-width input fields */
+  input[type=text], input[type=password], input[type=email] {
+  width: 100%;
+  padding: 15px;
+  margin: 0px 0 15px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f2f1;
+}
+
+/* Add a background color when the inputs get focus */
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+.footerLinks{
+    text-align:center;
+    padding-bottom: 10px;
+}
+
