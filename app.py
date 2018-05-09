@@ -6,7 +6,7 @@ from functools import wraps
 
 #from logging.config import dictConfig
 
-from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser
+from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser,Search
 
 app = Flask(__name__)
 app.secret_key = 'dad555ass34dawddasfrjegb/1kjbvr/o'
@@ -14,12 +14,13 @@ app.secret_key = 'dad555ass34dawddasfrjegb/1kjbvr/o'
 Counties = []
 
 def getCounties():
-    with open("counties.txt", "r") as c:
+    with open("Counties.txt", "r") as c:
         for line in c:
             Counties.append(line.strip())
 
 
 getCounties()
+
 class propTable(Table):
 	
 	classes = ['proptable'] #table css class
@@ -32,7 +33,6 @@ class propTable(Table):
 	Bedrooms = Col('Bedrooms')
 	bathrooms = Col('Bathrooms')
 
-
 # passes the counties to the rent search in the template
 @app.context_processor
 def inject_counties():
@@ -44,28 +44,37 @@ def Home():
     properties = getAllProps()
     return render_template('home.html', title = 'Home',properties = properties)
 
-@app.route('/rent')
+@app.route('/rent', methods=["GET","POST"])
 def Rent():
-    
+    if request.form["submit"]:
+
+        session['location'] = request.form['county']
+        session['minCost'] = request.form['minPrice']
+        session['maxCost'] = request.form['maxPrice']
+        session['minBed'] = request.form['minBed']
+        session['maxBed'] = request.form['maxBed']
+
+    #flash([session['location'],minCost, maxCost, minBed, maxBed])
+
+    session['searchProps'] = Search(session['location'],session['minCost'], session['maxCost'], session['minBed'], session['maxBed'])
+
+    return render_template('results.html' , title = 'Rent', properties = session['searchProps'])
 
 @app.route('/account')
 def Account():
-
     fname = session['userData']['name']
     lname = session['userData']['surname']
     email = session['userData']['email']
     phone = session['userData']['phone']
-    
-	
+
     properties = getUserProps(session['userData']['email'])
     table = propTable(properties)
 
     return render_template('account.html', title = 'Account', fname = fname , lname = lname, email = email, phone = phone, table=table)
-    
+
 @app.route('/login')
 def Login():
-    return render_template('login.html', title = 'Account Login')   
-
+    return render_template('login.html', title = 'Account Login')
 
 @app.route('/ProcessLogin',methods=["GET","POST"])
 def AccountLogin():
@@ -82,7 +91,6 @@ def AccountLogin():
         if sha256_crypt.verify(request.form['Password'],psw): ##if the hashed input password is equal to the hashed saved password
             session['logged_in'] = True
             session['username'] = data['name'] #users name
-            
             
             flash("You are now Logged in ")
             return redirect(url_for("Account"))
@@ -137,7 +145,7 @@ def ProcessRegistration():
             post={"name": fname, "surname": sname, "email": email, "phone": phone, "password": sha256_crypt.encrypt(str(request.form['Password']))}
             registerUser(post)
             flash("Thanks for registering!")
-            return render_template('account.html', title = 'Account')
+            return render_template('login.html', title = 'Account')
 
     
 
@@ -183,11 +191,11 @@ def propHandling():
     if request.form["submit"]:
         
         address = request.form['address']
-        cost = request.form['cost']
+        cost = int(request.form['cost'])
         desc = request.form['desc']
         amenities = request.form['amenities']
-        bed = request.form['bed']
-        bath = request.form['bath']
+        bed = int(request.form['bed'])
+        bath = int(request.form['bath'])
     
     post={"User": session['userData']['email'],"Addres": address,"cost":cost,"description":desc,
           "amenities":amenities,"Bedrooms":bed,"bathrooms":bath}

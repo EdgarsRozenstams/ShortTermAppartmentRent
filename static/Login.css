@@ -1,13 +1,4 @@
-button.close{
-     background-color: Transparent;
-     background-repeat:no-repeat;
-     border: none;
-     cursor:pointer;
-     overflow: hidden;
-     outline:none;
-     width: auto;
-    margin-right: 0px;
-}
+
 
 .LoginForm{
     display: block;

@@ -1,7 +1,7 @@
 {% extends "toolbar.html" %}
 
 {% block body %}
-<link rel="stylesheet" href="./static/CreateAccount.css">
+<link rel="stylesheet" href="./static/RegistrationForm.css">
 <div>
   <form class="registrationForm" action="/propRegistrationHandling" method='post'>
     <div style="margin: 10px;">
@@ -16,8 +16,7 @@
       <input type="number" placeholder="Cost per month" name="cost" required><br><br>       
         
       <label name="desc"><b>Description</b></label>
-      <input type="text" placeholder="Description" name="desc" required>
-        
+      <textarea placeholder="Description" name="desc"></textarea>
       <label name="amenities"><b>Amenities</b></label>
       <input type='text' placeholder="List amenities" name="amenities" required><br><br>
     

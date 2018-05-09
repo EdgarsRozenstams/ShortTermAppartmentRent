@@ -31,4 +31,30 @@ def registerProperty(post):
 def updateUser(post):
 	db = Connect()
 	collection = db.TestColl
-	mycollection.update_one({'_id':mongo_id}, {"$set": post}, upsert=False)
+	#mycollection.update_one({'_id':mongo_id}, {"$set": post}, upsert=False)
+
+def Search(location,minCost,maxCost,minBed,maxBed):
+	
+	if minCost == "":
+		minCost = 0
+	else:
+		minCost = int(minCost)
+
+	if maxCost == "":
+		maxCost = 99999
+	else:
+		maxCost = int(maxCost)
+
+	if minBed == "":
+		minBed = 0
+	else:
+		minBed = int(minBed)
+
+	if maxBed == "":
+		maxBed = 99999
+	else:
+		maxBed = int(maxBed)
+		
+	db = Connect()
+	searchResults = list(db.TestProperties.find({ "Addres":location, "cost":{"$gte": minCost, "$lte": maxCost} , "Bedrooms":{"$gte": minBed, "$lte": maxBed} },{'_id':0}).sort("cost")) #session['searchProps'] = db.TestProperties.find( "Addres":location)
+	return searchResults

@@ -4,9 +4,10 @@
     <head>
         <meta charset="UTF-8">
         <title>{{title}}</title>
-        <link rel="stylesheet" type="text/css" href="./static/Main.css">
+        <link rel="stylesheet" type="text/css" href="./static/Toolbar.css">
     </head>
     <body>
+        
         <div class="toolbar">
             
              {% if session.logged_in %}
@@ -23,11 +24,11 @@
             <div id="simpleModal" class=modal>
                 <div class="modal-content">
                     <span class="closeBtn">&times;</span>
-                    <form>
+                    <form action="/rent" method="post">
                         <fieldset>
                             <div class="col">
                                 <label>Area:</label>
-                                <select name="counties" method="GET">
+                                <select name="county" method="GET">
                                     {% for county in counties %}
                                         <option value= "{{county}}" SELECTED>{{county}}</option>"
                                     {% endfor %}
@@ -46,7 +47,7 @@
                                 <input placeholder="Max" type="number" name="maxBed">
                             </div>
                             
-                            <a href=""><button name="search" value="action" class="search">SEARCH</button></a>
+                            <a><button type="submit" name="submit" value="action" class="search">SEARCH</button></a>
 
                             
                         </fieldset>
