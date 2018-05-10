@@ -10,7 +10,15 @@
       <hr>
         
       <label name="address"><b>Address</b></label>
-      <input type="text" placeholder="Address" name="address" required>
+      <select name="county" method="GET">
+          {% for county in counties %}
+            <option value= "{{county}}" SELECTED>{{county}}</option>"
+          {% endfor %}
+      </select>
+      <input type="text" name="address1" required>
+      <input type="text" name="address2">
+      <input type="text" name="address3">
+        
       
       <label name="cost"><b>Cost per month</b></label>
       <input type="number" placeholder="Cost per month" name="cost" required><br><br>       
@@ -21,10 +29,10 @@
       <input type='text' placeholder="List amenities" name="amenities" required><br><br>
     
       <label name="bed"><b>Bedroom count</b></label>
-      <input type="text" placeholder="Bedroom count" name="bed" required>
+      <input type="number" placeholder="Bedroom count" name="bed" required>
 
       <label name="bath"><b>Bathroom count</b></label>
-      <input type="text" placeholder="Bathroom count" name="bath" required>
+      <input type="number" placeholder="Bathroom count" name="bath" required>
 
       <div class="formBtns">
         <button style="width: 100%;" name="submit" value="action" class="button">Submit</button>

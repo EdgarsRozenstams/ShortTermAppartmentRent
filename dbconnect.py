@@ -56,5 +56,5 @@ def Search(location,minCost,maxCost,minBed,maxBed):
 		maxBed = int(maxBed)
 		
 	db = Connect()
-	searchResults = list(db.TestProperties.find({ "Addres":location, "cost":{"$gte": minCost, "$lte": maxCost} , "Bedrooms":{"$gte": minBed, "$lte": maxBed} },{'_id':0}).sort("cost")) #session['searchProps'] = db.TestProperties.find( "Addres":location)
+	searchResults = list(db.TestProperties.find({ "county":location, "cost":{"$gte": minCost, "$lte": maxCost} , "Bedrooms":{"$gte": minBed, "$lte": maxBed} },{'_id':0}).sort("cost")) #session['searchProps'] = db.TestProperties.find( "Addres":location)
 	return searchResults

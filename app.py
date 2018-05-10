@@ -26,7 +26,7 @@ class propTable(Table):
 	classes = ['proptable'] #table css class
 	
 	User = Col('User', show=False)
-	Addres = Col('Addres')
+	address = Col('Address')
 	cost = Col('Cost')
 	description = Col('Description')
 	amenities = Col('Amenities')
@@ -53,8 +53,6 @@ def Rent():
         session['maxCost'] = request.form['maxPrice']
         session['minBed'] = request.form['minBed']
         session['maxBed'] = request.form['maxBed']
-
-    #flash([session['location'],minCost, maxCost, minBed, maxBed])
 
     session['searchProps'] = Search(session['location'],session['minCost'], session['maxCost'], session['minBed'], session['maxBed'])
 
@@ -96,8 +94,8 @@ def AccountLogin():
             return redirect(url_for("Account"))
 
         else:
-             flash("Invalid Credentials, try again")
-             return render_template('login.html', title = 'Account Login')
+            flash("Invalid Credentials, try again")
+            return render_template('login.html', title = 'Account Login')
 
 def login_required(f):
     @wraps(f)
@@ -184,20 +182,34 @@ def UpdateProfile():
 @app.route('/registerProp')
 @login_required
 def registerProp():
-    return render_template('registerProp.html', title = 'Register Property')
+    return render_template('registerProp.html', title = 'Register Property', counties = Counties)
 
 @app.route('/propRegistrationHandling', methods=["GET","POST"])
 def propHandling():
     if request.form["submit"]:
         
-        address = request.form['address']
+        address = []
+
+        county = request.form['county']
+        
+        address.append(county)
+        address.append(request.form['address1'])
+        address.append(request.form['address2'])
+        address.append(request.form['address3'])
+        
+        address = ', '.join(address)
+       
+        #strips the ", " is last fiels is not filled in
+        if address.endswith(' '):
+            address = address[:-2]
+        
         cost = int(request.form['cost'])
         desc = request.form['desc']
         amenities = request.form['amenities']
         bed = int(request.form['bed'])
         bath = int(request.form['bath'])
     
-    post={"User": session['userData']['email'],"Addres": address,"cost":cost,"description":desc,
+    post={"User": session['userData']['email'],"county":county ,"address": address,"cost":cost,"description":desc,
           "amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
     
     registerProperty(post)
