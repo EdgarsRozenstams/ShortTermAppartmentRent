@@ -195,7 +195,6 @@ def propHandling():
         address.append(county)
         address.append(request.form['address1'])
         address.append(request.form['address2'])
-        address.append(request.form['address3'])
         
         address = ', '.join(address)
        
