@@ -1,4 +1,7 @@
+import pymongo
 from pymongo import MongoClient
+from bson.objectid import ObjectId
+import pprint
 
 def Connect():
 	client = MongoClient('mongodb+srv://C00195570:j264du@3rdyearproject-sams9.mongodb.net/admin')
@@ -6,12 +9,30 @@ def Connect():
 	db = client.TestDB
 	return db
 
+def getUserDetails(email):
+    db = Connect()
+    users = db.TestColl
+    #userData = users.find_one({"email": email},{'_id': 0}) #strips the _id as the obj type has problems ,{'_id': 0}
+
+    for itm in users.find({"email":email},{'_id': 0}):
+        return itm
+
+def getUserId(email):
+    db = Connect()
+    users = db.TestColl
+    print('getId')
+
+    for itm in users.find({"email":email}):
+        userid = itm.get('_id')
+        #return userid
+        return str(userid)
+
 def getUserProps(user):
 	db = Connect()
 	collection = db.TestProperties
 	properties = list(collection.find({"User": user},{'_id': 0}))	
 	return properties
-	
+
 def getAllProps():
 	db = Connect()
 	collection = db.TestProperties
@@ -28,10 +49,11 @@ def registerProperty(post):
 	collection = db.TestProperties
 	collection.insert_one(post)
 	
-def updateUser(post):
+def updateUser(post, userId):
 	db = Connect()
 	collection = db.TestColl
-	#mycollection.update_one({'_id':mongo_id}, {"$set": post}, upsert=False)
+	
+	mycollection.update_one({'_id':userId}, {"$set": post}, upsert=False)
 
 def Search(location,minCost,maxCost,minBed,maxBed):
 	

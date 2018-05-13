@@ -1,12 +1,13 @@
 #Name   :Edgars Rozenstams
+#C-Code :C00195570
 from flask import Flask, render_template, request, session, flash, redirect, url_for
 from flask_table import Table, Col, LinkCol
 from passlib.hash import sha256_crypt #password hashing
 from functools import wraps
 
-#from logging.config import dictConfig
+import pprint
 
-from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser,Search
+from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser, Search, getUserDetails, getUserId
 
 app = Flask(__name__)
 app.secret_key = 'dad555ass34dawddasfrjegb/1kjbvr/o'
@@ -18,10 +19,9 @@ def getCounties():
         for line in c:
             Counties.append(line.strip())
 
-
 getCounties()
 
-class propTable(Table):
+class propTable(Table):#table for user properties in the account page
 	
 	classes = ['proptable'] #table css class
 	
@@ -60,6 +60,7 @@ def Rent():
 
 @app.route('/account')
 def Account():
+    
     fname = session['userData']['name']
     lname = session['userData']['surname']
     email = session['userData']['email']
@@ -68,34 +69,29 @@ def Account():
     properties = getUserProps(session['userData']['email'])
     table = propTable(properties)
 
-    return render_template('account.html', title = 'Account', fname = fname , lname = lname, email = email, phone = phone, table=table)
+    return render_template('account.html', title = fname+' '+lname , fname = fname , lname = lname, email = email, phone = phone, table=table)
 
-@app.route('/login')
+@app.route('/login', methods=["GET","POST"])
 def Login():
-    return render_template('login.html', title = 'Account Login')
-
-@app.route('/ProcessLogin',methods=["GET","POST"])
-def AccountLogin():
-    db = Connect()
-    users = db.TestColl
-    
-    if request.form["submit"]:
-
-        data = users.find_one({"email": request.form['Email']},{'_id': 0}) #strips the _id as the obj type has problems ,{'_id': 0}
-		
-        session['userData'] = data
-        psw = data['password']  #gets the password from the json document 
-        
-        if sha256_crypt.verify(request.form['Password'],psw): ##if the hashed input password is equal to the hashed saved password
-            session['logged_in'] = True
-            session['username'] = data['name'] #users name
+    try:
+        if request.form["submit"]:
             
-            flash("You are now Logged in ")
-            return redirect(url_for("Account"))
+            session['userData'] = getUserDetails(request.form['Email'])
+            session['userId'] = getUserId(request.form['Email'])
 
-        else:
-            flash("Invalid Credentials, try again")
-            return render_template('login.html', title = 'Account Login')
+            psw = session['userData']['password']  #gets the password from the json document 
+            
+            if sha256_crypt.verify(request.form['Password'],psw): ##if the hashed input password is equal to the hashed saved password
+                session['logged_in'] = True
+                session['username'] = session['userData']['name'] #users name
+                
+                flash("You are now Logged in ")
+                return redirect(url_for("Account"))
+        
+    except Exception as e:
+            #flash(e)
+            error = "Invalid credentials, try again."
+            return render_template("login.html", title = 'Account Login', error = error)  
 
 def login_required(f):
     @wraps(f)
@@ -113,7 +109,7 @@ def logout():
     session.clear()
     flash("You Have Been logged out")
     return redirect(url_for("Home"))
-  
+
 @app.route('/Register')
 def CreateAccount():
     return render_template('createAccount.html', title = 'Register')
@@ -149,36 +145,38 @@ def ProcessRegistration():
 
 @app.route('/EditProfile')
 @login_required
-def EditProfile(): 
-	fname = session['userData']['name']
-	sname = session['userData']['surname']
-	email = session['userData']['email']
-	phone = session['userData']['phone']	
-		
-	return render_template('editAccount.html', title = 'Edit Profile', fname = fname, sname = sname, email = email, phone = phone)
-	
-@app.route('/UpdateProfile', methods=["GET","POST"] )
-@login_required
-def UpdateProfile():
-		if request.form["submit"]:
-		
-			fname = request.form['FName']
-			sname = request.form['SName']
-			email = request.form['Email']
-			phone = request.form['Phone']
+def EditProfile():
+    fname = session['userData']['name']
+    sname = session['userData']['surname']
+    email = session['userData']['email']
+    phone = session['userData']['phone']
 
-		post = session['userData']
-		
-		#replaces user data
-		post["name"] = fname
-		post["surname"] = sname
-		post["email"] = email
-		post["phone"]= phone
-		
-		flash(post)
-		
-		updateUser(post)
-	
+    try:
+        if request.form["submit"]:
+            #read in field values to save as new account details
+            fname = request.form['FName']
+            sname = request.form['SName']
+            email = request.form['Email']
+            phone = request.form['Phone']
+
+            session['post'] = session['userData']
+
+            #replaces user data
+            session['post']["name"] = fname
+            session['post']["surname"] = sname
+            session['post']["email"] = email
+            session['post']["phone"]= phone
+
+            flash(post)
+
+            updateUser(session['post'],session['userId'])
+            return redirect(url_for("Account"))
+        
+
+    except Exception as e:
+        #flash(e)
+        return render_template('editAccount.html', title = 'Edit Profile', fname = fname, sname = sname, email = email, phone = phone)
+
 @app.route('/registerProp')
 @login_required
 def registerProp():
@@ -197,7 +195,6 @@ def propHandling():
         address.append(request.form['address2'])
         
         address = ', '.join(address)
-       
         #strips the ", " is last fiels is not filled in
         if address.endswith(' '):
             address = address[:-2]
@@ -208,8 +205,7 @@ def propHandling():
         bed = int(request.form['bed'])
         bath = int(request.form['bath'])
     
-    post={"User": session['userData']['email'],"county":county ,"address": address,"cost":cost,"description":desc,
-          "amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
+    post={"User": session['userData']['email'],"county":county ,"address": address,"cost":cost,"description":desc,"amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
     
     registerProperty(post)
     flash("Property has been registered")

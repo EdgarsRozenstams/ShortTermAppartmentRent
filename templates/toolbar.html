@@ -27,7 +27,7 @@
                     <form action="/rent" method="post">
                         <fieldset>
                             <div class="col">
-                                <label>Area:</label>
+                                <label class="searchLabel">Area:</label>
                                 <select name="county" method="GET">
                                     {% for county in counties %}
                                         <option value= "{{county}}" SELECTED>{{county}}</option>"
@@ -36,45 +36,31 @@
                             </div>
 
                             <div class="col">
-                                <label>Price Range:</label>
+                                <label class="searchLabel">Price Range:</label>
                                 <input placeholder="Min" type="number" name="minPrice">
                                 <input placeholder="Max" type="number" name="maxPrice"> 
                             </div>
                             
                             <div class="col">
-                                <label>Bedrooms:</label>
+                                <label class="searchLabel">Bedrooms:</label>
                                 <input placeholder="Min" type="number" name="minBed">
                                 <input placeholder="Max" type="number" name="maxBed">
                             </div>
                             
                             <a><button type="submit" name="submit" value="action" class="search">SEARCH</button></a>
 
-                            
                         </fieldset>
                     </form>                    
                 </div>    
-            </div>
-            
-            
+            </div>   
             
             <script src="./static/index.js"></script>
         </div>
    
         <hr> 
         
-        {% with messages = get_flashed_messages() %}
-	       {% if messages %}
-	           {% for message in messages %}
-		          <div role="alert">
-			         <ul class=flashes>
-                        <li>{{ message }}</li>
-                     </ul>
-                  </div>
-                {% endfor %}
-	       {% endif %}
-	   {% endwith %}
+        {% block body%}
+        {% endblock %}
         
-       {% block body%}
-       {% endblock %}
     </body>
 </html>

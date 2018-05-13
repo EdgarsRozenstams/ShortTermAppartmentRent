@@ -87,9 +87,13 @@ fieldset{
     vertical-align: baseline;
 }
 
-label{
+.searchLabel{
     display: block;
     padding-bottom: 7px;
+}
+
+label{
+    display: block;
 }
 
 hr {

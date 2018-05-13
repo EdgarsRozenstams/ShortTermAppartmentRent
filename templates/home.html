@@ -7,7 +7,6 @@
     <hr>
     <div class="properties">
         {% for p in properties %}
-            
             <div class="propertyList">    
                 <div  class="propAddress">
                     <h1><a>{{p.address}}</a></h1>
@@ -15,10 +14,15 @@
                 
                 <div class="propDetails">
                     Cost: {{p.cost}} /Month<br>
-                    {{p.description}}<br>
+                    <hr>
+                    <label style="text-decoration: underline">Description:</label>
+                    {{p.description}}
+                    <label style="text-decoration: underline">Amenaties:</label>
                     {{p.amenities}}<br>
-                    {{p.Bedrooms}} Bedrooms<br>
-                    {{p.bathrooms}} Bathrooms<br>
+                    <div class="bedBath">
+                        <label class="bed">{{p.Bedrooms}} Bedrooms</label>
+                        <label class="bath">{{p.bathrooms}} Bathrooms</label>
+                    </div>
                 </div>
             </div> 
         {% endfor %}

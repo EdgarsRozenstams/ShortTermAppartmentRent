@@ -20,7 +20,7 @@ input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, inp
 
 /* Modal Content/Box */
 .registrationForm {
-  background-color: #b5ffe3;
+  background-color: #7cc2a7;
   margin: 0% auto 0% auto; /* 5% from the top, 15% from the bottom and centered */
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
