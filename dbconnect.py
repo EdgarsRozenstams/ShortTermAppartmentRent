@@ -20,11 +20,8 @@ def getUserDetails(email):
 def getUserId(email):
     db = Connect()
     users = db.TestColl
-    print('getId')
-
     for itm in users.find({"email":email}):
         userid = itm.get('_id')
-        #return userid
         return str(userid)
 
 def getUserProps(user):
@@ -48,12 +45,19 @@ def registerProperty(post):
 	db = Connect()
 	collection = db.TestProperties
 	collection.insert_one(post)
-	
+
 def updateUser(post, userId):
-	db = Connect()
-	collection = db.TestColl
-	
-	mycollection.update_one({'_id':userId}, {"$set": post}, upsert=False)
+    print(post)
+    db = Connect()
+    collection = db.TestColl
+    ConvertedId = ObjectId(userId)
+
+    collection.update_one({"_id": ConvertedId}, {"$set":
+                             {"name": post.get("name"),
+                              "surname": post.get("surname"),
+                              "email": post.get("email"),
+                              "phone": post.get("phone")}},
+							  upsert=False)
 
 def Search(location,minCost,maxCost,minBed,maxBed):
 	

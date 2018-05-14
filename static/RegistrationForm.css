@@ -23,7 +23,7 @@ input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, inp
   background-color: #7cc2a7;
   margin: 0% auto 0% auto; /* 5% from the top, 15% from the bottom and centered */
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 50%; /* Could be more or less, depending on screen size */
 }
 
 textarea{
@@ -35,9 +35,32 @@ textarea{
   font-family: Verdana, Arial, Helvetica, sans-serif;
   border: 1px solid black;
 }
-element{
-  background: white;
+
+.cancelBtn{
+  width: 100%;
+  word-wrap: break-word;
+  display: inline-block;
+  font-size: 2.5vw;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #538888;
+  border: none;
+  padding: 5px;
+  margin-top: 5px;
 }
 
+a.cancelBtn:hover {
+  background-color: #368e7d
+}
 
+a.cancelBtn:active {
+  background-color: #368e7d;
+  transform: translateY(4px);
+  text-decoration: none;
+}
 
+a, a:hover, a:active, a:visited, a:focus {
+  text-decoration:none;
+}

@@ -7,20 +7,18 @@
         <link rel="stylesheet" type="text/css" href="./static/Toolbar.css">
     </head>
     <body>
-        
+
         <div class="toolbar">
-            
-             {% if session.logged_in %}
+            {% if session.logged_in %}
                     <a href="/"><button class="button">Home</button></a>
                     <button id="rent" class="button rent">Rent </button>
                     <a href="/account"><button class="button">Account</button></a> 
-             {% else %}
-                   <a href="/"><button class="button">Home</button></a>
-                   <button id="rent" class="button">Rent</button>
-                   <a href="/login"><button class="button">Log in</button></a>
-             {% endif %}
-            
-            
+            {% else %}
+                <a href="/"><button class="button">Home</button></a>
+                <button id="rent" class="button">Rent</button>
+                <a href="/login"><button class="button">Log in</button></a>
+            {% endif %}
+
             <div id="simpleModal" class=modal>
                 <div class="modal-content">
                     <span class="closeBtn">&times;</span>
@@ -40,27 +38,23 @@
                                 <input placeholder="Min" type="number" name="minPrice">
                                 <input placeholder="Max" type="number" name="maxPrice"> 
                             </div>
-                            
+
                             <div class="col">
                                 <label class="searchLabel">Bedrooms:</label>
                                 <input placeholder="Min" type="number" name="minBed">
                                 <input placeholder="Max" type="number" name="maxBed">
                             </div>
-                            
+
                             <a><button type="submit" name="submit" value="action" class="search">SEARCH</button></a>
 
                         </fieldset>
                     </form>                    
                 </div>    
             </div>   
-            
             <script src="./static/index.js"></script>
         </div>
-   
         <hr> 
-        
         {% block body%}
         {% endblock %}
-        
     </body>
 </html>

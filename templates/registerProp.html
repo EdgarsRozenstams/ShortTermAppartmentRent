@@ -5,7 +5,7 @@
 <div>
   <form class="registrationForm" action="/propRegistrationHandling" method='post'>
     <div style="margin: 10px;">
-      <h1 align="center">Sign Up</h1>
+      <h1 align="center">Register Property</h1>
       <p>Please fill all the fields to register your property.</p>
       <hr>
         
@@ -17,27 +17,31 @@
       </select>
       <input type="text" placeholder="Town" name="address1" required>
       <input type="text" placeholder="Address" name="address2" required>
-        
-      
+
       <label name="cost"><b>Cost per month</b></label>
       <input type="number" placeholder="Cost per month" name="cost" required><br><br>       
         
       <label name="desc"><b>Description</b></label>
       <textarea placeholder="Description" name="desc"></textarea>
       <label name="amenities"><b>Amenities</b></label>
-      <input type='text' placeholder="List amenities" name="amenities" required><br><br>
-    
-      <label name="bed"><b>Bedroom count</b></label>
-      <input type="number" placeholder="Bedroom count" name="bed" required>
+      <input type='text' placeholder="List amenities" name="amenities" required><br>
+      <div style="display:flex;">
+        <div style="float:left;">
+            <label name="bed"><b>Bedroom count</b></label>
+            <input type="number" placeholder="Bedroom count" name="bed" required>
+        </div>
 
-      <label name="bath"><b>Bathroom count</b></label>
-      <input type="number" placeholder="Bathroom count" name="bath" required>
-
-      <div class="formBtns">
+        <div style="padding-left:20px">
+            <label name="bath"><b>Bathroom count</b></label>
+            <input type="number" placeholder="Bathroom count" name="bath" required>
+        </div>
+      </div>
+      <br>
+      <div style="display:flex;">
         <button style="width: 100%;" name="submit" value="action" class="button">Submit</button>
+        <a href="/account" class="cancelBtn">Cancel</a>
       </div>
     </div>
-  </form>
-      
+  </form>    
 </div> 
 {% endblock %}
