@@ -1,7 +1,7 @@
 {% extends "toolbar.html" %}
 
 {% block body %}
-<link rel="stylesheet" href="./static/Home.css">
+<link rel="stylesheet" href="/static/Home.css">
 <div class="Home">
     <h1 class="Header">All Properties</h1>
     <hr>
@@ -9,7 +9,7 @@
         {% for p in properties %}
             <div class="propertyList">    
                 <div  class="propAddress">
-                    <h1><a>{{p.address}}</a></h1>
+                    <h1><a href="/property/{{p._id}}">{{p.address}}</a></h1>
                 </div>
                 
                 <div class="propDetails">

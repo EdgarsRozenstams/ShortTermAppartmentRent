@@ -1,13 +1,15 @@
 #Name   :Edgars Rozenstams
 #C-Code :C00195570
-from flask import Flask, render_template, request, session, flash, redirect, url_for
+from flask import (Flask, render_template, request,
+                    session, flash, redirect, url_for)
 from flask_table import Table, Col, LinkCol
 from passlib.hash import sha256_crypt #password hashing
 from functools import wraps
 
 import pprint
 
-from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser, Search, getUserDetails, getUserId
+from dbconnect import *
+#from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser, Search, getUserDetails, getUserId, getProperty, getOwner
 
 app = Flask(__name__)
 app.secret_key = 'dad555ass34dawddasfrjegb/1kjbvr/o'
@@ -64,8 +66,10 @@ def Account():
     email = session['userData']['email']
     phone = session['userData']['phone']
 
-    properties = getUserProps(session['userData']['email'])
-    table = propTable(properties)
+    #properties = 
+    table = propTable(getUserProps(
+            getUserId(
+            session['userData']['email'])))
 
     return render_template('account.html', title = fname+' '+lname , fname = fname , lname = lname, email = email, phone = phone, table=table)
 
@@ -90,7 +94,7 @@ def Login():
                     #flash("You are now Logged in ")
                     return redirect(url_for("Account"))
 
-        except Exception as e:
+        except Exception:
                 error = "Invalid credentials, try again."
                 return render_template("login.html", title = 'Account Login', error = error)  
 
@@ -139,7 +143,7 @@ def CreateAccount():
                     registerUser(post)
                     flash("Thanks for registering!")
                     return render_template('login.html', title='Account')
-    except Exception as e:
+    except Exception:
         return render_template('createAccount.html', title='Register')
 
 @app.route('/EditProfile', methods=["GET","POST"])
@@ -172,7 +176,7 @@ def EditProfile():
 
         return redirect(url_for("Account"))
 
-    except Exception as e:
+    except Exception:
         return render_template('editAccount.html', title = 'Edit Profile', fname = fname, sname = sname, email = email, phone = phone)
 
 @app.route('/registerProp', methods=["GET","POST"])
@@ -197,24 +201,30 @@ def registerProp():
             amenities = request.form['amenities']
             bed = int(request.form['bed'])
             bath = int(request.form['bath'])
-        
-            post={"User": session['userData']['email'],"county":county ,"address": address,"cost":cost,"description":desc,"amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
+            
+
+            post={"User": getUserId(session['userData']['email']),"county":county ,"address": address,"cost":cost,"description":desc,"amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
             
             registerProperty(post)
             #flash("Property has been registered")
             return redirect(url_for("Account"))
     
-    except Exception as e:
+    except Exception:
         return render_template('registerProp.html', title = 'Register Property', counties = Counties)
 
-@app.route('/property', methods=["GET","POST"])
-def property():
-    #try:
+@app.route('/property/<propId>')
+def property(propId):
 
-    return render_template('property.html', title = 'Property')
+    currentProperty = getProperty(propId)
+    
 
+    session['prop'] = getProperty(propId)
+    print(session['prop'])
+    
+    session['owner'] = getOwner(session['prop']['User'])
 
+    #session['owner'] = getOwner(ownerID)
+    return render_template('property.html', title = 'Property', address = session['prop']['address'], cost = session['prop']['cost'], beds = session['prop']['Bedrooms'], baths = session['prop']['bathrooms'], description = session['prop']['description'], name = session['owner']['name'], email = session['owner']['email'], phone = session['owner']['phone'])
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run(debug=True, use_reloader=True)

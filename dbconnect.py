@@ -9,6 +9,7 @@ def Connect():
 	db = client.TestDB
 	return db
 
+# for login
 def getUserDetails(email):
     db = Connect()
     users = db.TestColl
@@ -35,7 +36,22 @@ def getAllProps():
 	collection = db.TestProperties
 	properties = list(collection.find())
 	return properties
-	
+
+# for property page
+def getProperty(id):
+    db = Connect()
+    collection = db.TestProperties
+
+    prop = collection.find_one({"_id": ObjectId(id)}, {"_id":0})
+    return prop
+
+def getOwner(id):
+    db = Connect()
+    users = db.TestColl
+
+    owner = users.find_one({"_id": ObjectId(id)}, {"_id":0})
+    return owner
+
 def registerUser(post):
 	db = Connect()
 	collection = db.TestColl
@@ -47,10 +63,11 @@ def registerProperty(post):
 	collection.insert_one(post)
 
 def updateUser(post, userId):
-    print(post)
     db = Connect()
     collection = db.TestColl
     ConvertedId = ObjectId(userId)
+
+	# check for existing emails, cant have 2 emails of the same type.
 
     collection.update_one({"_id": ConvertedId}, {"$set":
                              {"name": post.get("name"),
@@ -58,6 +75,8 @@ def updateUser(post, userId):
                               "email": post.get("email"),
                               "phone": post.get("phone")}},
 							  upsert=False)
+
+
 
 def Search(location,minCost,maxCost,minBed,maxBed):
 	
