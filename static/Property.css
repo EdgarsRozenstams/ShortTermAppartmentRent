@@ -1,7 +1,7 @@
 div.content{
     margin-left: 25%;
     max-width: 50%;
-    background: pink;
+    background: bisque;
 }
 
 div.propHeader{
@@ -21,7 +21,7 @@ div.propHeader{
 
 .headerInfo{
     width: 30%;
-    background: pink;
+    background: bisque;
     position: inherit;
 }
 
@@ -44,7 +44,7 @@ div.propHeader{
     width: 100%
 }
 
-.propDetails{
+.propInfo{
     background: white;
     word-wrap: break-word;
     padding: 3px 10px;
@@ -72,6 +72,32 @@ img{
     height: 25vw;
 }
 
-li{
-    margin-left: 15px;
+/* propToolbar css*/
+
+
+.propToolbar {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #fddd
+}
+.propToolbar button{
+    word-wrap: break-word;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #538888;
+    border: none;
+    padding: 5px 10px;
+    font-size: 17px;
+}
+
+.propToolbar button:hover {
+    background-color: #368e7d;
+}
+
+#map{
+    height: 300px;
+    width: 100%;
 }

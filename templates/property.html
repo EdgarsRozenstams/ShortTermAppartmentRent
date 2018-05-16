@@ -2,8 +2,12 @@
 
 {% block body %}
     
-    <link rel="stylesheet" href="/static/Property.css">
-    
+    <head>
+        <link rel="stylesheet" href="/static/Property.css">
+        <script src="https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyBzJOP-YgBoJTAl5X1zK3NXmE3ynx4NZQY"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </head>
+
     <div style="width:100%">
         <div class="content">
             <div class="propHeader">
@@ -38,25 +42,39 @@
                 </div>
             </div>
 
-            <div class="propDetails">
-                <div class="description">
-                    <h3>Description:</h3>
-                    <p style="margin-top:0px; padding-left:10px;">{{description}}</p>
-                </div>
-                <div class="amenaties">
-                    <h3>Amenaties:</h3>
-                    <table>
-                        <tbody>
-                            {% for p in amenaties %}
-                                <tr>
-                                    <li>{{ p.capitalize() }}</li>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+            <div class="propToolbar">
+                    <button class="toolbar" onclick="changeTab(event, 'info')"><a>Information</a></li>
+                    <button class="toolbar" onclick="changeTab(event, 'map')"><a>Map</a></li>
             </div>
+            
+            <div class="tab" id="info">
+                <div class="propInfo">
+                    <div class="description">
+                        <h3>Description:</h3>
+                        <p style="margin-top:0px; padding-left:10px;">{{description}}</p>
+                    </div>
+                    <div class="amenaties">
+                        <h3>Amenaties:</h3>
+                        <table>
+                            <tbody>
+                                {% for p in amenaties %}
+                                    <tr>
+                                        <li style="margin-left: 15px;">{{ p.capitalize() }}</li>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> 
+
+            <div class="tab" id="map" hidden></div>
         </div>
     </div>
+    
+    <script src="/static/property.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzJOP-YgBoJTAl5X1zK3NXmE3ynx4NZQY&callback=initMap" async defer></script>
+
+
 
 {% endblock%}
