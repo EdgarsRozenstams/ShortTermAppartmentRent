@@ -1,17 +1,17 @@
 {% extends "toolbar.html" %}
 
 {% block body %}
-    
+
     <head>
         <link rel="stylesheet" href="/static/Property.css">
         <script src="https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyBzJOP-YgBoJTAl5X1zK3NXmE3ynx4NZQY"></script>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     </head>
+    
 
     <div style="width:100%">
         <div class="content">
             <div class="propHeader">
-                <h2 class="address">{{address}}</h2>
+                <h2 class="address" id="address">{{address}}</h2>
                 <div class="headerInfo">
                     <a style="padding:10px;">{{cost}}&euro;/Month</a>
                     <div style="display:flex;" class="bedBath">
@@ -72,9 +72,8 @@
         </div>
     </div>
     
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/static/property.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzJOP-YgBoJTAl5X1zK3NXmE3ynx4NZQY&callback=initMap" async defer></script>
-
-
 
 {% endblock%}

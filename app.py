@@ -1,20 +1,18 @@
-#Name   :Edgars Rozenstams
-#C-Code :C00195570
+# Name   :Edgars Rozenstams
+# C-Code :C00195570
 from flask import (Flask, render_template, request,
-                    session, flash, redirect, url_for)
+                   session, flash, redirect, url_for)
 from flask_table import Table, Col, LinkCol
-from passlib.hash import sha256_crypt #password hashing
+from passlib.hash import sha256_crypt  # password hashing
 from functools import wraps
 
-import pprint
-
 from dbconnect import *
-#from dbconnect import Connect, registerUser, registerProperty, getUserProps, getAllProps, updateUser, Search, getUserDetails, getUserId, getProperty, getOwner
 
 app = Flask(__name__)
 app.secret_key = 'dad555ass34dawddasfrjegb/1kjbvr/o'
 
 Counties = []
+
 
 def getCounties():
     with open("Counties.txt", "r") as c:
@@ -22,6 +20,7 @@ def getCounties():
             Counties.append(line.strip())
 
 getCounties()
+
 
 class propTable(Table):  # table for user properties in the account page
     classes = ['proptable']  # table css class
@@ -38,14 +37,16 @@ class propTable(Table):  # table for user properties in the account page
 # passes the counties to the rent search in the template
 @app.context_processor
 def inject_counties():
-    return dict(counties = Counties)
+    return dict(counties=Counties)
+
 
 @app.route('/')
 def Home():
     properties = getAllProps()
-    return render_template('home.html', title = 'Home',properties = properties)
+    return render_template('home.html', title='Home', properties=properties)
 
-@app.route('/rent', methods=["GET","POST"])
+
+@app.route('/rent', methods=["GET", "POST"])
 def Rent():
     if request.form["submit"]:
 
@@ -55,59 +56,71 @@ def Rent():
         session['minBed'] = request.form['minBed']
         session['maxBed'] = request.form['maxBed']
 
-    session['searchProps'] = Search(session['location'],session['minCost'], session['maxCost'], session['minBed'], session['maxBed'])
+    session['searchProps'] = Search(session['location'],
+                                    session['minCost'], session['maxCost'],
+                                    session['minBed'], session['maxBed'])
 
-    return render_template('results.html' , title = 'Rent', properties = session['searchProps'])
+    return render_template('results.html',
+                           title='Rent',
+                           properties=session['searchProps'])
+
 
 @app.route('/account')
 def Account():
-    
     fname = session['userData']['name']
     lname = session['userData']['surname']
     email = session['userData']['email']
     phone = session['userData']['phone']
 
-    #properties = 
     table = propTable(getUserProps(
                       getUserId(
-                      session['userData']['email'])))
+                                session['userData']['email'])))
 
-    return render_template('account.html', title = fname+' '+lname , fname = fname , lname = lname, email = email, phone = phone, table=table)
+    return render_template('account.html', title=fname+' '+lname,
+                           fname=fname, lname=lname, email=email,
+                           phone=phone, table=table)
 
-@app.route('/login', methods=["GET","POST"])
+
+@app.route('/login', methods=["GET", "POST"])
 def Login():
-    if session.get('logged_in') == True: #stops you logging in twice.
-        if session['logged_in'] == True:
+    if session.get('logged_in'):  # stops you logging in twice.
+        if session['logged_in']:
             return redirect(url_for("Account"))
     else:
         try:
             if request.form["submit"]:
-                
+
                 session['userData'] = getUserDetails(request.form['Email'])
                 session['userId'] = getUserId(request.form['Email'])
 
-                psw = session['userData']['password']  #gets the password from the json document 
-                
-                if sha256_crypt.verify(request.form['Password'],psw): ##if the hashed input password is equal to the hashed saved password
+                # gets the password from the json document
+                psw = session['userData']['password']
+
+                # if the hashed input password is equal
+                # to the hashed saved password
+                if sha256_crypt.verify(request.form['Password'], psw):
                     session['logged_in'] = True
-                    session['username'] = session['userData']['name'] #users name
-                    
-                    #flash("You are now Logged in ")
+                    session['username'] = session['userData']['name']
+
                     return redirect(url_for("Account"))
 
         except Exception:
                 error = "Invalid credentials, try again."
-                return render_template("login.html", title = 'Account Login', error = error)  
+                return render_template("login.html",
+                                       title='Account Login',
+                                       error=error)
+
 
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):  # argument and key word args
         if 'logged_in' in session:
-            return f(*args,**kwargs)
+            return f(*args, **kwargs)
         else:
             flash("You Need To Be Logged In")
             return redirect(url_for('Login'))
     return wrap
+
 
 @app.route("/logout")
 @login_required
@@ -116,7 +129,8 @@ def logout():
     flash("You Have Been logged out")
     return redirect(url_for("Home"))
 
-@app.route('/Register', methods=["GET","POST"])
+
+@app.route('/Register', methods=["GET", "POST"])
 def CreateAccount():
     try:
         if request.form["submit"]:
@@ -129,25 +143,27 @@ def CreateAccount():
 
             if psw == confirmPsw:
                 db = Connect()
-                collection = db.TestColl
+                collection = db.Users
 
                 x = collection.count({"email": email})
 
                 if x > 0:  # check if a person has an already existing account
-                    flash("That username is already taken, please choose another")
-                    return render_template('createAccount.html', title='Register')
+                    return render_template('createAccount.html',
+                                           title='Register')
 
                 else:
                     post = {"name": fname, "surname": sname,
                             "email": email, "phone": phone,
-                            "password": sha256_crypt.encrypt(str(request.form['Password']))}
+                            "password": sha256_crypt.encrypt(
+                                str(request.form['Password']))}
                     registerUser(post)
                     flash("Thanks for registering!")
                     return render_template('login.html', title='Account')
     except Exception:
         return render_template('createAccount.html', title='Register')
 
-@app.route('/EditProfile', methods=["GET","POST"])
+
+@app.route('/EditProfile', methods=["GET", "POST"])
 @login_required
 def EditProfile():
     try:
@@ -158,7 +174,7 @@ def EditProfile():
 
         if request.form["submit"]:
             print("first test")
-            #read in field values to save as new account details
+            # read in field values to save as new account details
             fname = request.form['FName']
             sname = request.form['SName']
             email = request.form['Email']
@@ -166,21 +182,24 @@ def EditProfile():
 
             session['post'] = session['userData']
 
-            #replaces user data
+            # replaces user data
             session['post']["name"] = fname
             session['post']["surname"] = sname
             session['post']["email"] = email
-            session['post']["phone"]= phone
-            #print("after update values")
+            session['post']["phone"] = phone
 
-            updateUser(session['post'],session['userId'])
+            updateUser(session['post'], session['userId'])
 
         return redirect(url_for("Account"))
 
     except Exception:
-        return render_template('editAccount.html', title = 'Edit Profile', fname = fname, sname = sname, email = email, phone = phone)
+        return render_template('editAccount.html',
+                               title='Edit Profile', fname=fname,
+                               sname=sname, email=email,
+                               phone=phone)
 
-@app.route('/registerProp', methods=["GET","POST"])
+
+@app.route('/registerProp', methods=["GET", "POST"])
 @login_required
 def registerProp():
     try:
@@ -195,7 +214,7 @@ def registerProp():
             address.append(request.form['address2'])
 
             address = ', '.join(address)
-            #strips the ", " is last fiels is not filled in
+            # strips the ", " is last fiels is not filled in
             if address.endswith(' '):
                 address = address[:-2]
 
@@ -208,24 +227,36 @@ def registerProp():
             bed = int(request.form['bed'])
             bath = int(request.form['bath'])
 
-            post={"User": getUserId(session['userData']['email']),"county":county ,"address": address,"cost":cost,"description":desc,"amenities":amenatiesList,"Bedrooms":bed,"bathrooms":bath}
-            
+            post = {"User": getUserId(session['userData']['email']),
+                    "county": county, "address": address,
+                    "cost": cost, "description": desc,
+                    "amenities": amenatiesList,
+                    "Bedrooms": bed, "bathrooms": bath}
+
             registerProperty(post)
-            #flash("Property has been registered")
             return redirect(url_for("Account"))
-    
+
     except Exception:
-        return render_template('registerProp.html', title = 'Register Property', counties = Counties)
+        return render_template('registerProp.html',
+                               title='Register Property',
+                               counties=Counties)
+
 
 @app.route('/property/<propId>')
 def property(propId):
-    currentProperty = getProperty(propId)
-
     session['prop'] = getProperty(propId)
     session['owner'] = getOwner(session['prop']['User'])
 
-    #session['owner'] = getOwner(ownerID)
-    return render_template('property.html', title = 'Property', address = session['prop']['address'], cost = session['prop']['cost'], beds = session['prop']['Bedrooms'], baths = session['prop']['bathrooms'], description = session['prop']['description'],amenaties = session['prop']['amenities'] , name = session['owner']['name'], email = session['owner']['email'], phone = session['owner']['phone'])
+    return render_template('property.html', title='Property',
+                           address=session['prop']['address'],
+                           cost=session['prop']['cost'],
+                           beds=session['prop']['Bedrooms'],
+                           baths=session['prop']['bathrooms'],
+                           description=session['prop']['description'],
+                           amenaties=session['prop']['amenities'],
+                           name=session['owner']['name'],
+                           email=session['owner']['email'],
+                           phone=session['owner']['phone'])
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
