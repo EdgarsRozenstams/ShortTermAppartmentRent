@@ -41,36 +41,19 @@
             <div class="propDetails">
                 <div class="description">
                     <h3>Description:</h3>
-                    <p style="margin-top:0px">{{description}}</p>
+                    <p style="margin-top:0px; padding-left:10px;">{{description}}</p>
                 </div>
                 <div class="amenaties">
                     <h3>Amenaties:</h3>
-                        <table id="facilities">
-                            <tbody>
+                    <table>
+                        <tbody>
+                            {% for p in amenaties %}
                                 <tr>
-                                    <td valign="top">
-                                        <ul>
-                                            <li>Parking</li>
-                                            <li>Central Heating</li>
-                                            <li>Washing Machine</li>
-                                        </ul>
-                                    </td>
-                                    <td valign="top">
-                                        <ul>
-                                            <li>Dryer</li>
-                                            <li>Dishwasher</li>
-                                            <li>Microwave</li>
-                                        </ul>
-                                    </td>
-                                    <td valign="top">
-                                        <ul>
-                                            <li>Wheelchair Access</li>
-                                            <li>Garden / Patio / Balcony</li>
-                                        </ul>
-                                    </td>
+                                    <li>{{ p.capitalize() }}</li>
                                 </tr>
-                            </tbody>
-                        </table>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

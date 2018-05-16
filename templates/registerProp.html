@@ -2,13 +2,14 @@
 
 {% block body %}
 <link rel="stylesheet" href="./static/RegistrationForm.css">
+
 <div>
   <form class="registrationForm" action="" method='post'>
     <div style="margin: 10px;">
       <h1 align="center">Register Property</h1>
       <p>Please fill all the fields to register your property.</p>
       <hr>
-        
+
       <label name="address"><b>Address</b></label>
       <select name="county" method="GET">
           {% for county in counties %}
@@ -20,11 +21,22 @@
 
       <label name="cost"><b>Cost per month</b></label>
       <input type="number" placeholder="Cost per month" name="cost" required><br><br>       
-        
+
       <label name="desc"><b>Description</b></label>
       <textarea placeholder="Description" name="desc"></textarea>
+
       <label name="amenities"><b>Amenities</b></label>
-      <input type='text' placeholder="List amenities" name="amenities" required><br>
+      <div style="display:flex">
+        <input type='text' class="amenatiesInput" placeholder="Input One Amentaty At A Time" name="amenities" id="amenaty">
+        <button class="addBtn" type="button" id="add" onclick="addAmentie()">+</button>
+
+        <select class="amenatiesDropDown" id="allAmenaties" name="allAmenaties">
+            <option value="" disabled selected>Add an Amenatie</option>
+        </select>
+      </div>
+
+      <input id="amenaties" name="jsAmenaties" hidden><br>
+
       <div style="display:flex;">
         <div style="float:left;">
             <label name="bed"><b>Bedroom count</b></label>
@@ -43,5 +55,32 @@
       </div>
     </div>
   </form>    
-</div> 
+</div>
+
+<script>
+    function addAmentie() {
+      var a = document.getElementById("allAmenaties");
+      var newAmenaty = document.getElementById("amenaty").value;
+      var option = document.createElement("option");
+      var all = [];
+
+      if(newAmenaty != "" || null){
+        option.text = newAmenaty;
+        a.add(option);
+
+        if(a[0].text==="Add an Amenatie"){
+          a.remove(0)
+        }
+      }
+
+      //for saving all amenaties to sent to python.
+      for (var i = 0; i < a.length; i++) {
+          all.push(a.options[i].text);   
+      }
+      document.getElementById("amenaties").value = all;
+      document.getElementById("amenaty").value = "";
+      
+    }
+</script>
+
 {% endblock %}

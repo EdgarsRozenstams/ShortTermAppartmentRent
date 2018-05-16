@@ -31,9 +31,7 @@ function closeModal() {
 
 //function to close modal is outise click
 function clickOutside(e) {
-   if (e.target == modal){
-
-       modal.style.display = 'none';
-
-   }
+    if (e.target == modal){
+        modal.style.display = 'none';
+    }
 }

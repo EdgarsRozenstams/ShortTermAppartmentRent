@@ -55,6 +55,10 @@ h3{
     margin:3px 0px 3px 0px;
 }
 
+div.amenaties{
+    margin-bottom: 5px;
+}
+
 .header{
     font-size: 2vw;
     text-align: center;
@@ -66,4 +70,8 @@ h3{
 img{
     width: 25vw; /* you can use % */
     height: 25vw;
+}
+
+li{
+    margin-left: 15px;
 }

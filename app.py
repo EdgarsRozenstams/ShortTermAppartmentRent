@@ -23,16 +23,17 @@ def getCounties():
 
 getCounties()
 
-class propTable(Table):#table for user properties in the account page
-	classes = ['proptable'] #table css class
+class propTable(Table):  # table for user properties in the account page
+    classes = ['proptable']  # table css class
 
-	User = Col('User', show=False)
-	address = Col('Address')
-	cost = Col('Cost')
-	description = Col('Description')
-	amenities = Col('Amenities')
-	Bedrooms = Col('Bedrooms')
-	bathrooms = Col('Bathrooms')
+    User = Col('User', show=False)
+    address = Col('Address')
+    cost = Col('Cost')
+    description = Col('Description')
+    amenities = Col('Amenities')
+    Bedrooms = Col('Bedrooms')
+    bathrooms = Col('Bathrooms')
+
 
 # passes the counties to the rent search in the template
 @app.context_processor
@@ -68,8 +69,8 @@ def Account():
 
     #properties = 
     table = propTable(getUserProps(
-            getUserId(
-            session['userData']['email'])))
+                      getUserId(
+                      session['userData']['email'])))
 
     return render_template('account.html', title = fname+' '+lname , fname = fname , lname = lname, email = email, phone = phone, table=table)
 
@@ -185,25 +186,29 @@ def registerProp():
     try:
         if request.form["submit"]:
             address = []
+            amenatiesList = []
+
             county = request.form['county']
-            
+
             address.append(county)
             address.append(request.form['address1'])
             address.append(request.form['address2'])
-            
+
             address = ', '.join(address)
             #strips the ", " is last fiels is not filled in
             if address.endswith(' '):
                 address = address[:-2]
-            
+
             cost = int(request.form['cost'])
             desc = request.form['desc']
-            amenities = request.form['amenities']
+            amenities = request.form['jsAmenaties']
+
+            amenatiesList = amenities.split(",")
+
             bed = int(request.form['bed'])
             bath = int(request.form['bath'])
-            
 
-            post={"User": getUserId(session['userData']['email']),"county":county ,"address": address,"cost":cost,"description":desc,"amenities":amenities,"Bedrooms":bed,"bathrooms":bath}
+            post={"User": getUserId(session['userData']['email']),"county":county ,"address": address,"cost":cost,"description":desc,"amenities":amenatiesList,"Bedrooms":bed,"bathrooms":bath}
             
             registerProperty(post)
             #flash("Property has been registered")
@@ -214,17 +219,13 @@ def registerProp():
 
 @app.route('/property/<propId>')
 def property(propId):
-
     currentProperty = getProperty(propId)
-    
 
     session['prop'] = getProperty(propId)
-    print(session['prop'])
-    
     session['owner'] = getOwner(session['prop']['User'])
 
     #session['owner'] = getOwner(ownerID)
-    return render_template('property.html', title = 'Property', address = session['prop']['address'], cost = session['prop']['cost'], beds = session['prop']['Bedrooms'], baths = session['prop']['bathrooms'], description = session['prop']['description'], name = session['owner']['name'], email = session['owner']['email'], phone = session['owner']['phone'])
+    return render_template('property.html', title = 'Property', address = session['prop']['address'], cost = session['prop']['cost'], beds = session['prop']['Bedrooms'], baths = session['prop']['bathrooms'], description = session['prop']['description'],amenaties = session['prop']['amenities'] , name = session['owner']['name'], email = session['owner']['email'], phone = session['owner']['phone'])
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
