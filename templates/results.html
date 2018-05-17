@@ -14,10 +14,18 @@
                 
                 <div class="propDetails">
                     Cost: {{p.cost}} /Month<br>
-                    {{p.description}}<br>
-                    {{p.amenities}}<br>
-                    {{p.Bedrooms}} Bedrooms<br>
-                    {{p.bathrooms}} Bathrooms<br>
+                    <hr>
+                    <label style="text-decoration: underline">Description:</label>
+                    {{p.description}}
+                    <label style="text-decoration: underline">Amenaties:</label>
+                    {% for a in p.amenities%}
+                        {{a.capitalize()}},
+                    {% endfor%}
+                    <br>
+                    <div class="bedBath">
+                        <label class="bed">{{p.Bedrooms}} Bedrooms</label>
+                        <label class="bath">{{p.bathrooms}} Bathrooms</label>
+                    </div>
                 </div>
             </div> 
         {% endfor %}

@@ -110,6 +110,10 @@ def Search(location, minCost, maxCost, minBed, maxBed):
                                        {"$gte": minCost,
                                         "$lte": maxCost},
                                         "Bedrooms": {"$gte": minBed,
-                                                     "$lte": maxBed}},
-                                       {"_id": 0}).sort("cost"))
+                                                     "$lte": maxBed}})
+                                                     .sort("cost"))
+
+    for p in searchResults:
+        p["_id"]=str(p["_id"])
+    print(searchResults)
     return searchResults
