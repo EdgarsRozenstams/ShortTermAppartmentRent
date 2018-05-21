@@ -6,7 +6,9 @@ from flask_table import Table, Col, LinkCol
 from passlib.hash import sha256_crypt  # password hashing
 from functools import wraps
 
-from dbconnect import *
+# from dbconnect import *
+from dbconnect import Connect, getAllProps, Search, getUserId, getUserDetails, getUserProps, registerUser, updateUser, registerProperty, getProperty, getOwner
+
 
 app = Flask(__name__)
 app.secret_key = 'dad555ass34dawddasfrjegb/1kjbvr/o'
